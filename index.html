@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파이썬 기말고사 대비 핵심 정리</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f7f5;
+    --bg3: #f0ede8;
+    --text: #1a1a1a;
+    --text2: #555;
+    --text3: #888;
+    --border: #e0dcd6;
+    --border2: #ccc;
+    --blue-bg: #e8f0fe;
+    --blue-text: #1a56b0;
+    --green-bg: #e6f4ea;
+    --green-text: #1a6e2e;
+    --amber-bg: #fef3e2;
+    --amber-text: #8a4e00;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --mono: 'SFMono-Regular', Consolas, 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1e;
+      --bg2: #2c2c2e;
+      --bg3: #3a3a3c;
+      --text: #f0f0f0;
+      --text2: #aaa;
+      --text3: #777;
+      --border: #3a3a3c;
+      --border2: #555;
+      --blue-bg: #1a2c4e;
+      --blue-text: #6aadff;
+      --green-bg: #1a3020;
+      --green-text: #5ccf7a;
+      --amber-bg: #3a2a0a;
+      --amber-text: #f5b840;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+  .wrapper { max-width: 860px; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
+
+  .hero { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.8rem; margin-bottom: 1.5rem; }
+  .hero h1 { font-size: 22px; font-weight: 600; margin-bottom: 0.4rem; }
+  .hero p { font-size: 13px; color: var(--text2); }
+
+  .toc { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; }
+  .toc-btn { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .toc-btn:hover { background: var(--blue-bg); color: var(--blue-text); border-color: transparent; }
+
+  .section { margin-bottom: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .section-header { display: flex; align-items: center; gap: 10px; padding: 0.85rem 1.2rem; background: var(--bg2); cursor: pointer; user-select: none; }
+  .section-header:hover { background: var(--bg3); }
+  .num-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: var(--blue-bg); color: var(--blue-text); white-space: nowrap; }
+  .section-title { font-size: 15px; font-weight: 500; flex: 1; }
+  .chevron { color: var(--text3); font-size: 13px; transition: transform 0.2s; display: inline-block; }
+  .open-chevron { transform: rotate(180deg); }
+
+  .section-body { padding: 1rem 1.2rem; display: none; flex-direction: column; gap: 0.9rem; background: var(--bg); }
+  .section-body.open { display: flex; }
+
+  .card { background: var(--bg2); border-radius: var(--radius-sm); padding: 0.85rem 1rem; border: 1px solid var(--border); }
+  .card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .card-label.concept { color: var(--blue-text); }
+  .card-label.exam { color: var(--amber-text); }
+  .card-label.code { color: var(--green-text); }
+
+  .card p, .card ul, .card li { font-size: 14px; color: var(--text); }
+  .card ul { padding-left: 1.2rem; }
+  .card ul li { margin-bottom: 0.2rem; }
+
+  pre { background: var(--bg3); border-radius: var(--radius-sm); padding: 0.8rem 1rem; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.55; border: 1px solid var(--border); color: var(--text); }
+
+  .diff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  @media (max-width: 560px) { .diff-row { grid-template-columns: 1fr; } }
+
+  .sub-label { font-size: 11px; font-weight: 600; color: var(--green-text); margin-bottom: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  th { background: var(--bg3); font-weight: 500; }
+  td code { font-family: var(--mono); background: var(--bg3); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  .top20 { list-style: none; counter-reset: top; display: flex; flex-direction: column; gap: 0.5rem; }
+  .top20 li { counter-increment: top; display: flex; align-items: flex-start; gap: 0.75rem; font-size: 14px; background: var(--bg2); border-radius: var(--radius-sm); padding: 0.65rem 0.9rem; border: 1px solid var(--border); }
+  .top20 li::before { content: counter(top); font-size: 11px; font-weight: 600; min-width: 22px; height: 22px; border-radius: 50%; background: var(--blue-bg); color: var(--blue-text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .top20 li code { font-family: var(--mono); font-size: 12px; background: var(--bg3); padding: 1px 5px; border-radius: 3px; }
+
+  footer { text-align: center; font-size: 12px; color: var(--text3); margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="hero">
+    <h1>🎓 파이썬 기말고사 핵심 정리</h1>
+    <p>📄 출처: 2주차_강의자료_merged.pdf (318p) — PDF에 실제 등장하는 개념·예제·코드만 수록</p>
+  </div>
+
+  <div class="toc" id="toc"></div>
+  <div id="sections"></div>
+
+  <footer>PDF 기반 기말고사 대비 자료 · 컴퓨팅적사고와 코딩기초</footer>
+</div>
+
+<script>
+const DATA = [
+  {
+    id:"s01", num:"CT", title:"1. 컴퓨팅 사고력",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념 (PDF 4단계)</div>
+      <ul>
+        <li><strong>문제 분해</strong> : 복잡한 문제를 작은 문제로 구분하기</li>
+        <li><strong>패턴 인식</strong> : 문제들 사이에 일정한 패턴 찾기</li>
+        <li><strong>일반화(추상화)</strong> : 다양한 문제의 공통된 핵심 기능으로 모델링하기</li>
+        <li><strong>알고리즘</strong> : 문제를 해결하기 위한 구체적인 순서와 방법을 개발하기</li>
+        <li><strong>프로그램 코딩</strong> : 알고리즘을 토대로 코드 작성</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트</div>
+      <p>커피 매출 문제가 대표 예시로 반복 등장. 커피가격 × 수량 = 총액 패턴을 컴퓨팅 사고 단계별로 분석하는 방식 숙지.</p>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF 커피 매출 알고리즘 (PDF 7단계)</div>
+      <pre>1. 커피 가격을 변수에 저장한다.
+2. 커피 수량을 변수에 저장한다.
+3. 빵 가격을 변수에 저장한다.
+4. 빵 수량을 변수에 저장한다.
+5. 커피 총액을 계산한다.
+6. 빵 총액을 계산한다.
+7. 전체 금액을 계산한다.
+8. 결과를 출력한다.</pre>
+    </div>`
+  },
+  {
+    id:"s02", num:"VAR", title:"2. 변수",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <ul>
+        <li>변수 = 메모리 방마다 부여한 이름 (메모리 방의 이름)</li>
+        <li>변수 선언 : 비어있는 메모리 방에 이름표를 붙이는 단계</li>
+        <li>변수 초기화 : 대입연산자 <code>=</code>로 데이터 저장</li>
+        <li>자료형 : 정수형(int), 실수형(float), 문자형(string), 논리형(bool)</li>
+        <li>실수형 : 소수점 16번째 자리까지만 저장, 나머지 손실</li>
+        <li>논리형 : True / False (첫 글자 반드시 대문자)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 변수명 규칙</div>
+      <ul>
+        <li>소문자로 시작 (대문자 시작 = 클래스명과 혼동)</li>
+        <li>두 단어 이상 → 낙타표기법 : <code>myScore</code>, <code>totalAmount</code></li>
+        <li>공백 불가 → SyntaxError 발생</li>
+        <li>언더바(_) 제외 특수문자 불가</li>
+        <li>숫자는 첫 글자 불가 (<code>1num</code> → 오류)</li>
+        <li>예약어 불가 (if, for, while, True, False, import …)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 잘못된 대입 예시</div>
+      <pre># SyntaxError 발생 — 반드시 암기
+100 = num1 + num2      # 왼쪽이 리터럴(숫자)
+num1 + num2 = result   # 왼쪽이 연산식</pre>
+    </div>`
+  },
+  {
+    id:"s03", num:"ARITH", title:"3. 산술 연산자",
+    html:`
+    <div class="card">
+      <div class="card-label concept">연산자 표 (PDF)</div>
+      <table>
+        <tr><th>연산자</th><th>설명</th><th>예시</th></tr>
+        <tr><td><code>+</code></td><td>덧셈 / 문자열 연결</td><td><code>3 + 2 → 5</code></td></tr>
+        <tr><td><code>-</code></td><td>뺄셈</td><td><code>5 - 2 → 3</code></td></tr>
+        <tr><td><code>*</code></td><td>곱셈 / 문자열 반복</td><td><code>"abc" * 3 → "abcabcabc"</code></td></tr>
+        <tr><td><code>/</code></td><td>나눗셈 (결과 <strong>항상 실수형</strong>)</td><td><code>10 / 2 → 5.0</code></td></tr>
+        <tr><td><code>//</code></td><td>몫 (정수형)</td><td><code>97 // 3 → 32</code></td></tr>
+        <tr><td><code>%</code></td><td>나머지</td><td><code>97 % 3 → 1</code></td></tr>
+        <tr><td><code>**</code></td><td>거듭제곱</td><td><code>2 ** 10 → 1024</code></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — / vs // 핵심 차이</div>
+      <div class="diff-row">
+        <div><div class="sub-label">/ (나눗셈 — 실수형 반환)</div>
+        <pre>10 / 2  → 5.0  (실수!)
+10 / 3  → 3.333...
+0  / 5  → 0.0
+5  / 0  → ZeroDivisionError</pre></div>
+        <div><div class="sub-label">// (몫 — 정수형 반환)</div>
+        <pre># 빵 나누기 예제 (PDF)
+bread = 97
+count = 3
+print(bread // count)  # 32명
+print(bread % count)   # 1개 남음</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 자료형 규칙</div>
+      <ul>
+        <li>정수 + 정수 = 정수형(int)</li>
+        <li>정수 + 실수 = <strong>실수형(float)</strong></li>
+        <li><code>/</code> 나눗셈 결과는 항상 실수형</li>
+        <li>문자열 * 0 또는 음수 = <code>''</code> (빈 문자열)</li>
+        <li>숫자 + 문자열 덧셈 → TypeError 오류</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label code">복합대입연산자 표 (PDF)</div>
+      <pre>num = 10
+num += 5    # num = num + 5  → 15
+num -= 5    # num = num - 5  → 10
+num *= 5    # num = num * 5  → 50
+num /= 2    # num = num / 2  → 5.0  ← 실수형!
+num %= 3    # num = num % 3  → 2
+num //= 3   # num = num // 3 → 0
+num **= 3   # num = num ** 3 → 0</pre>
+    </div>`
+  },
+  {
+    id:"s04", num:"INPUT", title:"4. 입력 — input()",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <ul>
+        <li>사용자에게 데이터를 입력받을 때 사용하는 함수</li>
+        <li><strong>중요</strong> : input()으로 받은 데이터는 <strong>무조건 문자열(str)</strong></li>
+        <li>계산에 사용하려면 반드시 형 변환 필요</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label code">두 가지 입력 방법 (PDF)</div>
+      <pre># 방법1 : print()로 유도 후 input()
+print("이름을 입력하세요: ")
+name = input()
+
+# 방법2 : input() 안에 메시지 직접 입력 (권장)
+name = input("이름을 입력하세요: ")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 형 변환 함수</div>
+      <pre>age    = int(input("나이: "))      # 문자열 → 정수
+height = float(input("키: "))     # 문자열 → 실수
+s      = str(10)                   # 정수 → 문자열
+
+# 논리형 변환 규칙 (PDF 명시)
+bool('')    → False   # 빈 문자열
+bool(' ')   → True    # 공백도 True
+bool('abc') → True    # 그 외 모두 True</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF BMI 예제 (float 변환 필수)</div>
+      <pre>몸무게 = float(input("몸무게(kg): "))
+신장   = float(input("신장(m): "))
+BMI    = 몸무게 / (신장 ** 2)
+print(f"BMI: {BMI:.2f}")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF 커피 매출 예제 (int 변환)</div>
+      <pre>아메리카노 = int(input("아메리카노 수량: "))
+카페라떼   = int(input("카페라떼 수량: "))
+카푸치노   = int(input("카푸치노 수량: "))
+총매출 = 아메리카노*2000 + 카페라떼*3000 + 카푸치노*3500
+print(f"총매출: {총매출:,}")</pre>
+    </div>`
+  },
+  {
+    id:"s05", num:"PRINT", title:"5. 출력 — print, f-string",
+    html:`
+    <div class="card">
+      <div class="card-label concept">출력 방식 5가지 (PDF)</div>
+      <table>
+        <tr><th>방식</th><th>형식</th><th>특징</th></tr>
+        <tr><td>출력1</td><td><code>print(a, b, c)</code></td><td>콤마(,), 공백 자동 삽입</td></tr>
+        <tr><td>출력2</td><td><code>print(a, b, sep="-")</code></td><td>구분자(sep) 지정</td></tr>
+        <tr><td>출력3</td><td><code>%d, %f, %s</code></td><td>형식 지정자 방식</td></tr>
+        <tr><td>출력4</td><td><code>"{}".format(값)</code></td><td>format() 함수</td></tr>
+        <tr><td>출력5</td><td><code>f"문자열 {변수}"</code></td><td>f-string (파이썬 3.6+, PDF 권장)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — f-string vs format 차이</div>
+      <div class="diff-row">
+        <div><div class="sub-label">format() 방식</div>
+        <pre>name = "홍길동"
+age  = 20
+print("이름:{}, 나이:{}".format(
+    name, age))</pre></div>
+        <div><div class="sub-label">f-string 방식 (PDF 권장)</div>
+        <pre>name = "홍길동"
+age  = 20
+print(f"이름:{name}, 나이:{age}")</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — f-string 형식 지정자</div>
+      <pre>pi    = 3.14159
+total = 1234567
+
+# 소수점 둘째 자리
+print(f"원주율: {pi:.2f}")      # → 원주율: 3.14
+
+# 천단위 쉼표
+print(f"총매출: {total:,}")     # → 총매출: 1,234,567
+
+# 소수점 + 쉼표 동시
+print(f"{total:,.2f}")          # → 1,234,567.00
+
+# BMI 출력 (PDF 그대로)
+print(f"결과: {BMI:.2f}")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">print end / sep 옵션</div>
+      <pre># end : 줄 바꿈 제어 (기본값 \n)
+print("hello", end=" ")
+print("world")          # → hello world (같은 줄)
+
+# sep : 구분자 지정 (기본값 공백)
+print("A", "B", "C", sep="-")  # → A-B-C</pre>
+    </div>`
+  },
+  {
+    id:"s06", num:"LOGIC", title:"6. 비교 / 논리 연산자",
+    html:`
+    <div class="card">
+      <div class="card-label concept">비교 연산자 (결과 항상 True/False)</div>
+      <table>
+        <tr><th>연산자</th><th>의미</th><th>포함 여부</th></tr>
+        <tr><td><code>==</code></td><td>같다</td><td>-</td></tr>
+        <tr><td><code>!=</code></td><td>다르다</td><td>-</td></tr>
+        <tr><td><code>&gt;</code></td><td>초과 (크다)</td><td>자신 포함 안 함</td></tr>
+        <tr><td><code>&gt;=</code></td><td>이상 (크거나 같다)</td><td>자신 포함</td></tr>
+        <tr><td><code>&lt;</code></td><td>미만 (작다)</td><td>자신 포함 안 함</td></tr>
+        <tr><td><code>&lt;=</code></td><td>이하 (작거나 같다)</td><td>자신 포함</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label concept">논리 연산자</div>
+      <ul>
+        <li><code>and</code> (&amp;) : 둘 다 True여야 True</li>
+        <li><code>or</code> (|) : 하나라도 True면 True</li>
+        <li><code>not</code> : True ↔ False 반전</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 범위 조건 두 표현 (PDF 명시)</div>
+      <pre>score = 85
+
+# 두 표현은 완전히 동일 (PDF에서 '같은 표현'으로 명시)
+if score >= 80 and score < 90:
+    print("B")
+
+if 80 <= score < 90:    # 파이썬만의 범위 표현
+    print("B")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF 장학생 판별 예제</div>
+      <pre>점수     = int(input("시험 성적: "))
+결석횟수  = int(input("결석 횟수: "))
+
+if 점수 >= 90 and 결석횟수 < 2:
+    print("장학생 대상입니다.")
+else:
+    print("장학생 대상이 아닙니다.")
+print("수고하셨습니다.")</pre>
+    </div>`
+  },
+  {
+    id:"s07", num:"IF", title:"7. if 조건문",
+    html:`
+    <div class="card">
+      <div class="card-label concept">구조 핵심</div>
+      <ul>
+        <li>콜론(<code>:</code>) 필수 + 들여쓰기(Tab 4칸) 필수</li>
+        <li>구조 종류 : if / if~else / if~elif~else / 중첩 if</li>
+        <li><code>pass</code> : 실행문이 아직 정해지지 않은 경우 자리 채우기</li>
+        <li>elif = "else if"의 줄임 (그렇지 않고 ~라면)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF if~elif 성적 구분 예시</div>
+      <pre>score = int(input("점수: "))
+
+if score >= 90:
+    print("A")
+elif score >= 80:   # 80 이상 90 미만
+    print("B")
+elif score >= 70:
+    print("C")
+elif score >= 60:
+    print("D")
+else:
+    print("F")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF BMI 비만도 판별 예제</div>
+      <pre>몸무게 = float(input("몸무게(kg): "))
+신장   = float(input("신장(cm): "))
+BMI    = 몸무게 / ((신장/100) ** 2)
+
+if BMI < 18.5:
+    결과 = "저체중"
+elif 18.5 <= BMI < 23:
+    결과 = "정상"
+elif 23 <= BMI < 25:
+    결과 = "과체중"
+else:
+    결과 = "비만"
+print("결과:", 결과)</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">중첩 조건문 (짝수/홀수 판별, PDF)</div>
+      <pre>num = int(input("숫자: "))
+
+if num > 0:
+    if num % 2 == 0:
+        print("양수이고 짝수")
+    else:
+        print("양수이고 홀수")
+else:
+    print("0 이하")</pre>
+    </div>`
+  },
+  {
+    id:"s08", num:"LOOP", title:"8. 반복문 — for, while",
+    html:`
+    <div class="card">
+      <div class="card-label concept">for vs while (PDF 비교)</div>
+      <div class="diff-row">
+        <div><div class="sub-label">for문 — 횟수 지정 반복</div>
+        <pre>for x in range(1, 6, 1):
+    print('x =', x)
+# range(시작, 끝, 단계)
+# 끝 숫자는 포함 안 됨!</pre></div>
+        <div><div class="sub-label">while문 — 조건 참일 때 반복</div>
+        <pre>x = 1
+while x <= 5:
+    print('x =', x)
+    x += 1   # 증가값 없으면 무한루프!</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — range() 함수</div>
+      <pre># 형식: range(시작, 끝, 단계)
+for i in range(5):          # 0,1,2,3,4       (시작,단계 생략 → 0부터, 1씩)
+for i in range(1, 6):       # 1,2,3,4,5       (단계 생략 → 1씩)
+for i in range(2, 10, 2):   # 2,4,6,8         (2씩 증가)
+for i in range(10, 0, -1):  # 10,9,8,...,1    (역순)</pre>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — break vs continue 차이</div>
+      <div class="diff-row">
+        <div><div class="sub-label">break — 반복문 완전 탈출</div>
+        <pre>for x in range(1, 11):
+    if x == 5:
+        break
+    print(x)
+# 출력: 1 2 3 4</pre></div>
+        <div><div class="sub-label">continue — 이번 회차만 건너뜀</div>
+        <pre>for x in range(1, 11):
+    if x % 2 == 0:
+        continue
+    print(x)
+# 출력: 1 3 5 7 9</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — for else / while else (PDF 코드 그대로)</div>
+      <pre># else : 반복문 정상 종료 시 실행
+# break로 탈출하면 else 실행 안 됨!
+
+x = 1
+while x <= 10:
+    print("hello:", x)
+    x += 1
+else:
+    print("성공 반복완료")    # 정상 종료 시만 실행
+
+for x in range(1, 10, 1):
+    print("hello:", x)
+    if x % 3 == 0:
+        break
+else:
+    print("반복문 끝")        # break 없이 끝날 때만 실행</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">무한 루프 (while True)</div>
+      <pre>while True:
+    print("p", end=" ")
+# 무한 반복 → Ctrl+C 로 중지</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">중첩 for문 — 구구단 (PDF)</div>
+      <pre>i = 0
+k = 0
+for i in range(2, 10, 1):
+    for k in range(1, 10, 1):
+        print(i, " X ", k, " = ", i*k)
+    print("")</pre>
+    </div>`
+  },
+  {
+    id:"s09", num:"LIST", title:"9. 리스트 (List)",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <ul>
+        <li>대괄호([]) 사용, 쉼표(,)로 구분</li>
+        <li>인덱스는 <strong>항상 0부터 시작</strong></li>
+        <li>없는 인덱스 접근 → <code>list index out of range</code> 오류</li>
+        <li>아이템 추가/삭제 시 인덱스 자동 변경</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — append vs pop 역할</div>
+      <div class="diff-row">
+        <div><div class="sub-label">append() — 맨 끝에 추가</div>
+        <pre>a = [1, 2, 3]
+a.append(10)
+# → [1, 2, 3, 10]
+# 인덱스 자동 +1</pre></div>
+        <div><div class="sub-label">pop() — 맨 끝 삭제 후 반환</div>
+        <pre>a = [1, 2, 3]
+a.pop()
+# → [1, 2]
+a.pop(0)   # 인덱스 지정
+# → [2]</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 슬라이싱 결과 유추</div>
+      <pre>a = [10, 20, 30, 40, 50]
+#     0   1   2   3   4
+
+a[1:3]   # → [20, 30]      인덱스 1이상 3미만
+a[:3]    # → [10, 20, 30]  처음부터 3미만
+a[2:]    # → [30, 40, 50]  2부터 끝까지
+a[:]     # → [10, 20, 30, 40, 50]  전체 복사</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">리스트 주요 함수 (PDF 표)</div>
+      <table>
+        <tr><th>함수</th><th>설명</th></tr>
+        <tr><td><code>append(x)</code></td><td>맨 뒤에 추가</td></tr>
+        <tr><td><code>insert(i, x)</code></td><td>특정 위치에 삽입</td></tr>
+        <tr><td><code>extend(list)</code></td><td>여러 값 추가 (리스트 연결)</td></tr>
+        <tr><td><code>remove(x)</code></td><td>값으로 삭제 (첫 번째 항목)</td></tr>
+        <tr><td><code>pop()</code></td><td>마지막 삭제 후 반환</td></tr>
+        <tr><td><code>sort()</code></td><td>오름차순 정렬 (기본값)</td></tr>
+        <tr><td><code>sort(reverse=True)</code></td><td>내림차순 정렬</td></tr>
+        <tr><td><code>reverse()</code></td><td>순서 뒤집기</td></tr>
+        <tr><td><code>index(x)</code></td><td>위치 찾기</td></tr>
+        <tr><td><code>len(a)</code></td><td>길이(개수)</td></tr>
+        <tr><td><code>sum(a)</code></td><td>합계</td></tr>
+        <tr><td><code>max(a)</code></td><td>최댓값</td></tr>
+        <tr><td><code>min(a)</code></td><td>최솟값</td></tr>
+        <tr><td><code>count(x)</code></td><td>특정 값의 빈도수</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF 2차원 리스트 접근</div>
+      <pre>students = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# 접근: 리스트이름[행][열]
+print(students[0][1])  # → 2 (0행 1열)
+
+# for문 반복 접근
+for row in students:
+    for val in row:
+        print(val, end=" ")</pre>
+    </div>`
+  },
+  {
+    id:"s10", num:"COMP", title:"10. 리스트 내포",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <p>리스트를 한 줄로 생성하는 방법. PDF에 "리스트 내포"와 "조건이 있는 리스트 내포" 두 가지 형태로 등장.</p>
+    </div>
+    <div class="card">
+      <div class="card-label code">기본 리스트 내포</div>
+      <pre># 형식: [표현식 for 변수 in 반복범위]
+squares = [x**2 for x in range(1, 6)]
+# → [1, 4, 9, 16, 25]
+
+# 10~100, 10씩 증가 수열 (PDF 예시)
+nums = [x for x in range(10, 101, 10)]
+# → [10, 20, 30, ..., 100]</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">조건이 있는 리스트 내포 (PDF)</div>
+      <pre># 형식: [표현식 for 변수 in 범위 if 조건]
+evens = [x for x in range(1, 11) if x % 2 == 0]
+# → [2, 4, 6, 8, 10]</pre>
+    </div>`
+  },
+  {
+    id:"s11", num:"DICT", title:"11. 딕셔너리 (Dictionary)",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <ul>
+        <li>키(key)와 값(value)의 쌍으로 이루어짐</li>
+        <li>중괄호({}) 사용, <code>키:값</code> 형태, 쉼표(,)로 구분</li>
+        <li>키는 중복 불가 / 값은 중복 가능</li>
+        <li>키가 중복되면 기존 값이 덮어씌워짐 (주의!)</li>
+        <li>리스트는 인덱스, 딕셔너리는 키(key)로 접근</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label code">딕셔너리 기본 사용법 (PDF)</div>
+      <pre>student = {"이름": "홍길동", "나이": 20, "점수": 85}
+
+# 조회 (키로 접근)
+print(student["이름"])    # → 홍길동
+
+# 추가 / 수정
+student["전화"] = "010-1234"  # 새 키 추가
+student["나이"] = 21           # 기존 값 수정
+
+# 삭제
+del student["전화"]
+
+# 개수
+print(len(student))</pre>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — key 접근 vs items() 접근 차이</div>
+      <div class="diff-row">
+        <div><div class="sub-label">keys()로 키 → 값 접근</div>
+        <pre>for key in d.keys():
+    print(key, d[key])
+# key 얻은 후 d[key]로 값 조회</pre></div>
+        <div><div class="sub-label">items() — 키+값 동시 접근 (더 간결)</div>
+        <pre>for key, value in d.items():
+    print(key, value)
+# 한 번에 key, value 모두 접근</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label code">딕셔너리 조회 함수 표 (PDF)</div>
+      <table>
+        <tr><th>방식</th><th>코드</th><th>반환</th></tr>
+        <tr><td><code>keys()</code></td><td><code>d.keys()</code></td><td>전체 키 목록</td></tr>
+        <tr><td><code>values()</code></td><td><code>d.values()</code></td><td>전체 값 목록</td></tr>
+        <tr><td><code>items()</code></td><td><code>d.items()</code></td><td>전체 (키, 값) 쌍</td></tr>
+      </table>
+    </div>`
+  },
+  {
+    id:"s12", num:"FUNC", title:"12. 함수",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <ul>
+        <li>특정 기능을 하는 코드를 묶어 놓은 것</li>
+        <li><code>def</code> 키워드 + 함수명 + 콜론(:) + 들여쓰기 실행문</li>
+        <li>인수 : 함수 호출 시 넘겨주는 데이터</li>
+        <li>매개변수 : 정의부에서 인수를 받아 저장하는 변수</li>
+        <li><code>return</code> : 결과값을 호출부로 반환</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label code">함수 정의 및 호출 형식 (PDF)</div>
+      <pre>def 함수이름(매개변수):
+    실행문
+    ...
+    return 반환값
+
+# 호출 방법 1
+함수명()
+
+# 호출 방법 2
+변수명 = 함수명()</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">return 있는 함수 vs 없는 함수</div>
+      <pre># return 있음 → 결과값 반환
+def add(a, b):
+    return a + b
+
+result = add(3, 5)   # result = 8
+
+# return 없음 → 출력만 (None 반환)
+def greet(name):
+    print(f"안녕하세요, {name}!")
+
+greet("홍길동")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label code">매개변수가 여러 개인 함수 (PDF)</div>
+      <pre>def printInfo(name, score, grade):
+    print(f"이름:{name}, 점수:{score}, 등급:{grade}")
+
+printInfo("홍길동", 85, "B")
+printInfo("김길동", 95, "A")</pre>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 함수의 필요성 (PDF 명시)</div>
+      <ul>
+        <li>코드 재사용 : 중복 코드를 함수로 만들면 코드 양 감소</li>
+        <li>코드 수정 용이 : 함수만 수정하면 전체 반영</li>
+        <li>모듈화 : 기능 단위로 분할, 독립적으로 개발·수정·재사용 가능</li>
+      </ul>
+    </div>`
+  },
+  {
+    id:"s13", num:"MOD", title:"13. 모듈",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <ul>
+        <li>모듈 = 특정 기능(함수)을 포함하고 있는 파일(xxx.py)</li>
+        <li>기능 → 함수 → 모듈 순서로 구성됨</li>
+        <li>import 시 파일명에서 확장자(.py) 제거 (calculator.py → calculator)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — import 3가지 방법 (PDF 표)</div>
+      <table>
+        <tr><th>방식</th><th>코드</th><th>사용법</th></tr>
+        <tr><td>기본</td><td><code>import 모듈이름</code></td><td><code>모듈이름.함수()</code></td></tr>
+        <tr><td>별명(as)</td><td><code>import 모듈이름 as 별명</code></td><td><code>별명.함수()</code></td></tr>
+        <tr><td>특정 함수만</td><td><code>from 모듈이름 import 함수이름</code></td><td><code>함수()</code> (모듈명 생략 가능)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF 예시 (math, turtle 모듈)</div>
+      <pre>import math
+math.sqrt(5)
+math.log2(1000)
+
+# as 별명 사용
+import math as m
+m.sqrt(5)
+
+# from 사용 시 모듈명 생략 가능
+from math import sqrt
+sqrt(5)           # math. 없이 바로 사용
+
+# 콤마(,) : 여러 함수 지정
+from calculator import add, sub, mul
+
+# 에스터리크(*) : 모든 기능 가져오기
+from calculator import *</pre>
+    </div>`
+  },
+  {
+    id:"s14", num:"RND", title:"14. random 모듈",
+    html:`
+    <div class="card">
+      <div class="card-label concept">핵심 개념</div>
+      <p>무작위(랜덤) 값을 생성할 때 사용하는 표준 라이브러리. 사용 전 <code>import random</code> 필수. 사용법: <code>random.함수명()</code></p>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — 함수 비교 (PDF 표 그대로)</div>
+      <table>
+        <tr><th>함수</th><th>설명</th><th>예시 결과</th></tr>
+        <tr><td><code>random.random()</code></td><td>0.0 이상 1.0 미만 실수</td><td><code>0.742...</code></td></tr>
+        <tr><td><code>random.randint(a, b)</code></td><td>a이상 b<strong>이하</strong> 정수</td><td><code>randint(1,10) → 7</code></td></tr>
+        <tr><td><code>random.uniform(a, b)</code></td><td>a이상 b이하 실수</td><td><code>uniform(1.0,5.0) → 3.14</code></td></tr>
+        <tr><td><code>random.choice(시퀀스)</code></td><td>1개 선택 (중복 가능)</td><td><code>choice(['a','b','c']) → 'b'</code></td></tr>
+        <tr><td><code>random.choices(시퀀스, k=n)</code></td><td>중복 허용 n개 선택</td><td><code>choices([1,2,3], k=2) → [2,3]</code></td></tr>
+        <tr><td><code>random.sample(시퀀스, k=n)</code></td><td><strong>중복 없이</strong> n개 선택</td><td><code>sample([1,2,3,4], 2) → [1,4]</code></td></tr>
+        <tr><td><code>random.shuffle(리스트)</code></td><td>제자리에서 섞음</td><td><code>shuffle(my_list)</code></td></tr>
+        <tr><td><code>random.seed(n)</code></td><td>난수 초기값 설정 (재현 가능)</td><td><code>seed(42)</code></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label exam">시험 포인트 — choice vs sample 차이</div>
+      <div class="diff-row">
+        <div><div class="sub-label">choice — 1개만 선택</div>
+        <pre>import random
+menu = ['아메리카노','라떼','모카']
+pick = random.choice(menu)
+print(pick)  # 1개 랜덤 출력</pre></div>
+        <div><div class="sub-label">sample — 중복 없이 여러 개</div>
+        <pre>import random
+# 로또: 1~45에서 6개 비복원
+lotto = random.sample(range(1,46), 6)
+print(lotto)</pre></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label code">PDF 숫자 맞히기 게임 (break + continue + random)</div>
+      <pre>import random
+answer = random.randint(1, 5)
+
+for i in range(10):
+    guess = int(input("숫자를 맞혀보세요(1~5): "))
+    if guess == answer:
+        print("정답!")
+        break
+    else:
+        continue</pre>
+    </div>`
+  },
+  {
+    id:"s15", num:"TOP20", title:"🏆 시험 직전 TOP 20",
+    html:`
+    <ol class="top20">
+      <li><code>/</code> 나눗셈 결과는 <strong>항상 실수형</strong> (<code>10/2 → 5.0</code>), <code>//</code> 몫은 정수형</li>
+      <li><code>input()</code> 결과는 <strong>항상 문자열</strong> → 계산에 사용하려면 <code>int()</code> / <code>float()</code> 변환 필수</li>
+      <li>f-string 형식: <code>f"{변수:.2f}"</code> (소수점 2자리), <code>f"{변수:,}"</code> (천단위 쉼표)</li>
+      <li>범위 조건 두 표현: <code>80 &lt;= score &lt; 90</code> = <code>score &gt;= 80 and score &lt; 90</code></li>
+      <li><code>range(시작, 끝, 단계)</code> → 끝 숫자 포함 안 됨. <code>range(1,6)</code> = 1,2,3,4,5</li>
+      <li><code>break</code> = 반복문 완전 탈출, <code>continue</code> = 이번 회차만 건너뛰고 계속</li>
+      <li><code>for~else</code> / <code>while~else</code> : break 없이 정상 종료할 때만 else 실행</li>
+      <li>리스트 인덱스는 <strong>0부터 시작</strong>. <code>a[1:3]</code> = 인덱스 1이상 3미만</li>
+      <li><code>append()</code> = 맨 끝 추가, <code>pop()</code> = 맨 끝 삭제 후 반환</li>
+      <li>리스트 내포: <code>[x**2 for x in range(1,6) if x%2==0]</code></li>
+      <li>딕셔너리: 키 중복 불가, 값 중복 가능. 키 중복 시 기존 값 덮어쓰기</li>
+      <li><code>items()</code> = key+value 동시 접근, <code>keys()</code> = key만, <code>values()</code> = value만</li>
+      <li>import 3종: <code>import math</code> / <code>import math as m</code> / <code>from math import sqrt</code></li>
+      <li><code>random.randint(a,b)</code> = a이상 b<strong>이하</strong> 정수 (b 포함!)</li>
+      <li><code>random.sample(시퀀스, k)</code> = 중복 없이 k개, <code>random.choices(시퀀스, k=n)</code> = 중복 허용</li>
+      <li>장학생 조건: <code>점수 >= 90 and 결석횟수 &lt; 2</code></li>
+      <li>BMI 공식: <code>BMI = 몸무게 / (신장 ** 2)</code> → 출력: <code>print(f"BMI: {BMI:.2f}")</code></li>
+      <li>함수 정의: <code>def 함수명(매개변수):</code> + 들여쓰기 + <code>return 값</code></li>
+      <li>변수명 규칙: 소문자 시작, 공백·특수문자 불가, 예약어 불가, 숫자 첫 글자 불가</li>
+      <li>복합대입: <code>num += 5</code> = <code>num = num+5</code>, <code>/=</code> 결과는 실수형 주의</li>
+    </ol>`
+  }
+];
+
+const tocEl = document.getElementById('toc');
+const secEl = document.getElementById('sections');
+
+DATA.forEach(sec => {
+  const btn = document.createElement('a');
+  btn.className = 'toc-btn';
+  btn.textContent = sec.num;
+  btn.href = '#' + sec.id;
+  btn.title = sec.title;
+  tocEl.appendChild(btn);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'section';
+  wrap.id = sec.id;
+
+  const hdr = document.createElement('div');
+  hdr.className = 'section-header';
+  hdr.innerHTML = `<span class="num-badge">${sec.num}</span><span class="section-title">${sec.title}</span><span class="chevron" id="chv-${sec.id}">▼</span>`;
+
+  const body = document.createElement('div');
+  body.className = 'section-body' + (sec.id === 's15' ? ' open' : '');
+  body.id = 'body-' + sec.id;
+  body.innerHTML = sec.html;
+
+  hdr.addEventListener('click', () => {
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    const chv = document.getElementById('chv-' + sec.id);
+    chv.classList.toggle('open-chevron', !isOpen);
+  });
+
+  wrap.appendChild(hdr);
+  wrap.appendChild(body);
+  secEl.appendChild(wrap);
+});
+
+// Open first section by default
+document.querySelector('.section-header').click();
+</script>
+</body>
+</html>
